@@ -41,10 +41,10 @@ flyway {
 
 //def testDbUrl = "jdbc:mysql://db4free.net:3306/tracker_test1?user=trackertest1&password=password&useSSL=false&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false"
 def testDbUrl = "jdbc:mysql://localhost.net:3306/tracker_test?user=tracker&useSSL=false&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false"
-task testMigrate(type: FlywayMigrateTask) {
+/*task testMigrate(type: FlywayMigrateTask) {
     url = testDbUrl
 }
-
+*/
 
 test {
     useJUnitPlatform()

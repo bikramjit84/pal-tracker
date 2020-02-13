@@ -1,6 +1,9 @@
 package io.pivotal.pal.tracker;
 
 import com.google.gson.Gson;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +22,16 @@ public class TimeEntryController {
     @Qualifier("JdbcTimeEntryRepository")
     private TimeEntryRepository timeEntryRepository;
 
-    public TimeEntryController(@Qualifier("JdbcTimeEntryRepository") TimeEntryRepository timeEntryRepository) {
+
+    private final DistributionSummary timeEntrySummary;
+    private final Counter actionCounter;
+
+    public TimeEntryController(@Qualifier("JdbcTimeEntryRepository") TimeEntryRepository timeEntryRepository, MeterRegistry meterRegistry ) {
         this.timeEntryRepository = timeEntryRepository;
+
+
+        timeEntrySummary = meterRegistry.summary("timeEntry.summary");
+        actionCounter = meterRegistry.counter("timeEntry.actionCounter");
 
     }
 
@@ -28,6 +39,10 @@ public class TimeEntryController {
     public ResponseEntity<TimeEntry> create(@RequestBody  TimeEntry timeEntryToCreate) {
 
         TimeEntry timeEntry = timeEntryRepository.create(timeEntryToCreate);
+
+        actionCounter.increment();
+        timeEntrySummary.record(timeEntryRepository.list().size());
+
         return new ResponseEntity<>(timeEntry, HttpStatus.CREATED);
     }
 
@@ -38,10 +53,15 @@ public class TimeEntryController {
         if (timeEntry == null) {
             httpStatus = HttpStatus.NOT_FOUND;
         }
+        actionCounter.increment();
+
         return new ResponseEntity<>(timeEntry, httpStatus);
     }
     @GetMapping("/time-entries")
     public ResponseEntity<List<TimeEntry>> list() {
+
+        actionCounter.increment();
+
         List<TimeEntry> timeEntry = timeEntryRepository.list();
 
         return new ResponseEntity<>(timeEntry, HttpStatus.OK);
@@ -55,6 +75,8 @@ public class TimeEntryController {
         if (timeEntry == null) {
             httpStatus = HttpStatus.NOT_FOUND;
         }
+        actionCounter.increment();
+
         return new ResponseEntity<>(timeEntry, httpStatus);
     }
 
@@ -63,6 +85,8 @@ public class TimeEntryController {
 
   timeEntryRepository.delete(id);
 
+        actionCounter.increment();
+        timeEntrySummary.record(timeEntryRepository.list().size());
         return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
 
     }

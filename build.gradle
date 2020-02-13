@@ -24,7 +24,8 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.9'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'mysql:mysql-connector-java',
+    implementation 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator',
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -49,15 +50,23 @@ task testMigrate(type: FlywayMigrateTask) {
 test {
     useJUnitPlatform()
 }
+springBoot {
+    buildInfo()
+}
 
 bootRun.environment([
         "WELCOME_MESSAGE": "hello",
         "SPRING_DATASOURCE_URL": developmentDbUrl,
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "*",
+        "MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS": "always",
+
 
 ])
 
 test.environment([
         "WELCOME_MESSAGE": "Hello from test",
-
         "SPRING_DATASOURCE_URL": testDbUrl,
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "*",
+        "MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS": "always",
+
 ])

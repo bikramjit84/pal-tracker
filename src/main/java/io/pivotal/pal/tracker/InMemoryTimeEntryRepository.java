@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Repository("InMemoryTimeEntryRepository")
 public class InMemoryTimeEntryRepository implements TimeEntryRepository {
 
     private long id = 0L;
@@ -29,7 +29,7 @@ public class InMemoryTimeEntryRepository implements TimeEntryRepository {
         return timeEntryMap.get(timeEntry.getId());
     }
 
-    public TimeEntry find(long timeEntryId) {
+    public TimeEntry find(Long timeEntryId) {
 
         return  timeEntryMap.get(timeEntryId);
     }
@@ -39,7 +39,7 @@ public class InMemoryTimeEntryRepository implements TimeEntryRepository {
         return new ArrayList<>(timeEntryMap.values());
     }
 
-    public TimeEntry update(long l, TimeEntry timeEntry) {
+    public TimeEntry update(Long l, TimeEntry timeEntry) {
 
         TimeEntry timeEntryDb = timeEntryMap.get(l);
         if (timeEntryDb == null) {
@@ -55,7 +55,7 @@ public class InMemoryTimeEntryRepository implements TimeEntryRepository {
         return timeEntryMap.put(l, timeEntryDb);
     }
 
-    public void delete(long id) {
+    public void delete(Long id) {
         timeEntryMap.remove(id);
     }
 }

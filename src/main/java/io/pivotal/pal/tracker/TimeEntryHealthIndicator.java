@@ -1,5 +1,6 @@
 package io.pivotal.pal.tracker;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ public class TimeEntryHealthIndicator implements HealthIndicator {
     private static final int MAX_TIME_ENTRIES = 5;
     private final TimeEntryRepository timeEntryRepo;
 
-    public TimeEntryHealthIndicator(TimeEntryRepository timeEntryRepo) {
+    public TimeEntryHealthIndicator(  @Qualifier("JdbcTimeEntryRepository") TimeEntryRepository timeEntryRepo) {
         this.timeEntryRepo = timeEntryRepo;
     }
 

@@ -26,7 +26,8 @@ public class TimeEntryController {
     private final DistributionSummary timeEntrySummary;
     private final Counter actionCounter;
 
-    public TimeEntryController(@Qualifier("JdbcTimeEntryRepository") TimeEntryRepository timeEntryRepository, MeterRegistry meterRegistry ) {
+    public TimeEntryController(@Qualifier("JdbcTimeEntryRepository") TimeEntryRepository timeEntryRepository,
+                               @Autowired MeterRegistry meterRegistry ) {
         this.timeEntryRepository = timeEntryRepository;
 
 
